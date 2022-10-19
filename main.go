@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/sns"
+	"os"
 )
 
 func main() {
@@ -10,5 +12,14 @@ func main() {
 		SharedConfigState: session.SharedConfigEnable,
 	}))
 
-	fmt.Println(sess)
+	svc := sns.New(sess)
+
+	//토픽 리스트 보여주기
+	topics, err := svc.ListTopics(nil)
+	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
+	fmt.Println("토픽 리스트 ", topics)
+
 }
