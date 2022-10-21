@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sns"
-	"os"
+	"send-message-service/send"
+	"strings"
 )
 
 func main() {
@@ -18,8 +19,14 @@ func main() {
 	topics, err := svc.ListTopics(nil)
 	if err != nil {
 		fmt.Println(err.Error())
-		os.Exit(1)
 	}
-	fmt.Println("토픽 리스트 ", topics)
+	arnURL := ""
+	for _, v := range topics.Topics {
+		if strings.Contains(*v.TopicArn, "email-test") { //test-ysh.fifo
+			arnURL = *v.TopicArn
+		}
+	}
+
+	send.SendMessage(arnURL, svc)
 
 }
