@@ -10,11 +10,16 @@ import (
 func SendMessage(arn string, svc *sns.SNS) {
 	msgPtr := flag.String("m", "테스트입니다ㅋㅋㅋ", "The message to send to the subscribed users of the topic")
 	topicPtr := flag.String("t", arn, "The ARN of the topic to which the user subscribes")
+	messageGroupId := flag.String("g", "donation", "")
+	messageDeduplicationId := flag.String("d", "1", "")
+
 	flag.Parse()
 
 	result, err := svc.Publish(&sns.PublishInput{
-		Message:  msgPtr,
-		TopicArn: topicPtr,
+		Message:          msgPtr,
+		TopicArn:         topicPtr,
+		MessageGroupId:   messageGroupId,
+		MessageStructure: messageDeduplicationId,
 	})
 	if err != nil {
 		fmt.Println(err.Error())
