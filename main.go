@@ -3,8 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/sns"
-	"send-message-service/send"
+	"send-message-service/service"
 	"strings"
 )
 
@@ -13,20 +12,20 @@ func main() {
 		SharedConfigState: session.SharedConfigEnable,
 	}))
 
-	svc := sns.New(sess)
-
-	//토픽 리스트 보여주기
-	topics, err := svc.ListTopics(nil)
+	queues, err := service.ListQueues(sess)
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("Got an error retrieving queue URLs:")
 	}
-	arnURL := ""
-	for _, v := range topics.Topics {
-		if strings.Contains(*v.TopicArn, "email-test") { //test-ysh.fifo
-			arnURL = *v.TopicArn
+
+	var queueURL string
+	for _, url := range queues.QueueUrls {
+		if strings.Contains(*url, "sqs-test.fifo") {
+			queueURL = *url
 		}
 	}
 
-	send.SendMessage(arnURL, svc)
-
+	err = service.SendMessage(sess, &queueURL)
+	if err != nil {
+		fmt.Println("메시지 전송 에러")
+	}
 }
