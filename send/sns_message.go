@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-func SendMessage(arn string, svc *sns.SNS) {
+func SendSNSMessage(arn string, svc *sns.SNS) {
 	msgPtr := flag.String("m", "테스트입니다ㅋㅋㅋ", "The message to send to the subscribed users of the topic")
 	topicPtr := flag.String("t", arn, "The ARN of the topic to which the user subscribes")
 	messageGroupId := flag.String("g", "donation", "")
