@@ -1,10 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"github.com/aws/aws-sdk-go/aws/session"
-	"send-message-service/service"
-	"strings"
+	"log"
+	"send-message-service/send"
 )
 
 func main() {
@@ -12,20 +11,10 @@ func main() {
 		SharedConfigState: session.SharedConfigEnable,
 	}))
 
-	queues, err := service.ListQueues(sess)
-	if err != nil {
-		fmt.Println("Got an error retrieving queue URLs:")
-	}
+	queueURL := ""
 
-	var queueURL string
-	for _, url := range queues.QueueUrls {
-		if strings.Contains(*url, "sqs-test.fifo") {
-			queueURL = *url
-		}
-	}
-
-	err = service.SendMessage(sess, &queueURL)
+	err := send.SendSqsMessage(sess, &queueURL)
 	if err != nil {
-		fmt.Println("메시지 전송 에러")
+		log.Println("메시지 전송 에러")
 	}
 }
