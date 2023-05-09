@@ -13,7 +13,7 @@ func main() {
 
 	queueURL := ""
 
-	err := send.SendSqsMessage(sess, &queueURL)
+	err := send.SendSqsMessage(sess, &queueURL, "emil", "메시지 내용")
 	if err != nil {
 		log.Println("메시지 전송 에러")
 	}
