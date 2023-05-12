@@ -1,0 +1,9 @@
+{
+  "ServiceName": "SendService",
+  "HttpPort": "7000",
+  "Environment": "local",
+  "Module": "send-message-service",
+  "AwsSqs" :{
+    "QueueURL" : ""
+  }
+}

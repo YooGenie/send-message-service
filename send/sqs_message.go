@@ -6,6 +6,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/google/uuid"
+	"send-message-service/config"
 )
 
 func SendSqsMessage(sess *session.Session, queueURL *string, eventType string, content interface{}) error {
@@ -24,11 +25,11 @@ func SendSqsMessage(sess *session.Session, queueURL *string, eventType string, c
 			},
 			"Env": {
 				DataType:    aws.String("String"),
-				StringValue: aws.String("local"),
+				StringValue: aws.String(config.Config.Environment),
 			},
 			"Module": {
 				DataType:    aws.String("String"),
-				StringValue: aws.String("send-message-service"),
+				StringValue: aws.String(config.Config.Module),
 			},
 		},
 		MessageBody:            aws.String(string(messageBody)),

@@ -3,10 +3,13 @@ package main
 import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"log"
+	"send-message-service/config"
 	"send-message-service/send"
 )
 
 func main() {
+	config.ConfigureEnvironment("./")
+
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	}))
