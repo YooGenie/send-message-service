@@ -1,25 +1,26 @@
 package send
 
 import (
-	"flag"
 	"fmt"
-	"github.com/aws/aws-sdk-go/service/sns"
 	"os"
+
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/sns"
+	"github.com/google/uuid"
 )
 
-func SendSNSMessage(arn string, svc *sns.SNS) {
-	msgPtr := flag.String("m", "테스트입니다ㅋㅋㅋ", "The message to send to the subscribed users of the topic")
-	topicPtr := flag.String("t", arn, "The ARN of the topic to which the user subscribes")
-	messageGroupId := flag.String("g", "donation", "")
-	messageDeduplicationId := flag.String("d", "1", "")
+func SendSNSMessage(topicArn string, sess *session.Session) error {
+	svc := sns.New(sess)
 
-	flag.Parse()
+	msgPtr := "메시지 내용입니다."
+	messageGroupId := "test"
+	messageDeduplicationId := uuid.New().String()
 
 	result, err := svc.Publish(&sns.PublishInput{
-		Message:          msgPtr,
-		TopicArn:         topicPtr,
-		MessageGroupId:   messageGroupId,
-		MessageStructure: messageDeduplicationId,
+		Message:                &msgPtr,
+		TopicArn:               &topicArn,
+		MessageGroupId:         &messageGroupId,
+		MessageDeduplicationId: &messageDeduplicationId,
 	})
 	if err != nil {
 		fmt.Println(err.Error())
@@ -27,4 +28,5 @@ func SendSNSMessage(arn string, svc *sns.SNS) {
 	}
 
 	fmt.Println(*result.MessageId)
+	return err
 }

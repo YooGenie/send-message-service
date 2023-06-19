@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/aws/aws-sdk-go/aws/session"
 	"log"
 	"send-message-service/config"
 	"send-message-service/send"
+
+	"github.com/aws/aws-sdk-go/aws/session"
 )
 
 func main() {
@@ -14,10 +15,16 @@ func main() {
 		SharedConfigState: session.SharedConfigEnable,
 	}))
 
-	queueURL := ""
+	//queueURL := ""
+	SNSURL := ""
 
-	err := send.SendSqsMessage(sess, &queueURL, "emil", "메시지 내용")
+	err := send.SendSNSMessage(SNSURL, sess)
 	if err != nil {
 		log.Println("메시지 전송 에러")
 	}
+
+	//err := send.SendSqsMessage(sess, &queueURL, "emil", "메시지 내용")
+	//if err != nil {
+	//	log.Println("메시지 전송 에러")
+	//}
 }
