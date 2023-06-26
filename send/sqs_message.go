@@ -2,11 +2,12 @@ package send
 
 import (
 	"encoding/json"
+	"send-message-service/config"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/google/uuid"
-	"send-message-service/config"
 )
 
 func SendSqsMessage(sess *session.Session, queueURL *string, eventType string, content interface{}) error {
@@ -16,20 +17,21 @@ func SendSqsMessage(sess *session.Session, queueURL *string, eventType string, c
 	messageDeduplicationId := uuid.New().String()
 
 	messageBody, _ := json.Marshal(content)
+	dataType := "String"
 
 	var _, err = svc.SendMessage(&sqs.SendMessageInput{
 		MessageAttributes: map[string]*sqs.MessageAttributeValue{
 			"EventType": {
-				DataType:    aws.String("String"),
-				StringValue: aws.String(eventType),
+				DataType:    &dataType,
+				StringValue: &eventType,
 			},
 			"Env": {
-				DataType:    aws.String("String"),
-				StringValue: aws.String(config.Config.Environment),
+				DataType:    &dataType,
+				StringValue: &config.Config.Environment,
 			},
 			"Module": {
-				DataType:    aws.String("String"),
-				StringValue: aws.String(config.Config.Module),
+				DataType:    &dataType,
+				StringValue: &config.Config.Module,
 			},
 		},
 		MessageBody:            aws.String(string(messageBody)),
